@@ -17,7 +17,7 @@ Requires **root** and a supported distribution:
 Ubuntu 18.04+ / Debian 10+ / CentOS 7+ / RHEL 7+ / Arch Linux.
 
 ```bash
-sudo su -c "wget -qO- https://raw.githubusercontent.com/xgp2012/MCEManager/main/install.sh | bash"
+sudo su -c "wget -qO- https://raw.githubusercontent.com/xgp2012/MCEManager/master/install.sh | bash"
 ```
 
 What it does:

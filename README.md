@@ -1,46 +1,35 @@
 <div align="center">
-  <a href="https://mcsmanager.com/" target="_blank">
-    <img src="./frontend/src/assets/logo.png" alt="MCSManagerLogo.png" width="510px" />    
+  <a href="https://github.com/xgp2012/MCEManager" target="_blank">
+    <img src="./frontend/src/assets/logo.png" alt="MCEManager Logo" width="510px" />
   </a>
 
   <br />
   <br />
 
-[![--](https://img.shields.io/badge/Support%20Platform-Windows/Linux/Mac-green.svg)](https://github.com/MCSManager)
-[![Status](https://img.shields.io/badge/NPM-v8.9.14-blue.svg)](https://www.npmjs.com/)
-[![Status](https://img.shields.io/badge/Node-v16.20.2-blue.svg)](https://nodejs.org/en/download/)
-[![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/MCSManager)
-
-<p align="center">
-  <a href="http://mcsmanager.com/"><img alt="Official Website" src="https://img.shields.io/badge/Site-Official Website-yellow"></a>
-  <a href="https://docs.mcsmanager.com/"><img alt="EnglishDocs" src="https://img.shields.io/badge/Docs-English Document-blue"></a>
-  <a href="https://discord.gg/BNpYMVX7Cd"><img alt="Discord" src="https://img.shields.io/badge/Discord-Join Us-5866f4"></a>
-  
-</p>
+[![--](https://img.shields.io/badge/Support%20Platform-Windows/Linux/Mac-green.svg)](https://github.com/xgp2012/MCEManager)
+[![Status](https://img.shields.io/badge/Node-v20.x-blue.svg)](https://nodejs.org/en/download/)
+[![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/xgp2012/MCEManager)
 
 <br />
-
-[English](README.md) - [简体中文](README_ZH.md) - [繁體中文](README_TW.md) - [日本語](README_JP.md) - [Deutsch](README_DE.md) - [Русский](README_RU.md) - [Spanish](README_ES.md) - [Thai](README_TH.md) - [Français](README_FR.md) - [Português BR](README_PTBR.md)
-
 </div>
 
 <br />
 
 ## What is this?
 
-**MCSManager Panel** (or simply **MCSM Panel**) is a fast-deploying, distributed, multi-user, and modern web-based management panel for **`Minecraft`**, **`Steam`**, and other game servers.
+**MCEManager** is a **commercial edition** of [MCSManager](https://github.com/MCSManager/MCSManager) — a fast-deploying, distributed, multi-user, modern web-based management panel for **`Minecraft`**, **`Steam`**, and other game servers.
 
-MCSManager has gained popularity within the **`Minecraft`** and **`Steam`** gaming communities. It enables you to manage multiple physical or virtual servers from a single platform, and offers a **secure**, **reliable**, and **granular multi-user permission system**. The MCSM Panel continues to support server administrators, operators, and independent developers, managing servers like **`Minecraft`**, **`Terraria`**, and other **`Steam`**-based games for them.
+On top of the full MCSManager panel it adds a complete **pay-to-use business subsystem**:
 
-MCSM also has **commercial applications** in mind, such as private server hosting and sales by **IDC service providers**. Several small and medium-sized enterprises already use the panel as a combined **server management** and **sales platform**. In addition, it supports **multi-language environments**, making it accessible to users across different countries and regions.
+- **User system**: open registration, email verification, account balance.
+- **Plans & templates**: sell predefined plans (Docker/process) or template-based instances.
+- **Orders & payment**: order lifecycle with the **Yipay (易支付)** gateway (MD5/RSA), idempotent callbacks.
+- **Automatic provisioning**: instances are created on daemon nodes automatically after payment, with CPU / memory / disk / bandwidth limits.
+- **Subscriptions**: periodic plans auto-renew from the account balance, fall back to manual renewal orders, and stop the instance when unpaid.
+- **Operations admin panel**: dashboard with trends, user/plan/template/order/subscription/instance/node management, payment & email configuration, operation logs.
+- **Email notifications**: order success, expiry reminders, payment failure, and admin alerts.
 
-<img width="1871" height="1342" alt="terminal" src="https://github.com/user-attachments/assets/7f6ed988-e402-4347-94ee-a0469f6658da" />
-
-<img width="1915" height="1386" alt="market" src="https://github.com/user-attachments/assets/fc276180-a826-476a-803e-a038f97115fc" />
-
-<img width="3164" height="2060" alt="1" src="https://github.com/user-attachments/assets/570d2447-66dc-4c0b-b2d2-4c3176b51d67" />
-
-<img width="3164" height="2060" alt="3" src="https://github.com/user-attachments/assets/2722cf9f-de9b-4630-b0ea-c00283791d8d" />
+> This is a fork of [MCSManager](https://github.com/MCSManager/MCSManager) (Apache-2.0). It keeps the upstream panel/daemon functionality and adds the commercial layer on top.
 
 <br />
 
@@ -52,7 +41,7 @@ MCSM also has **commercial applications** in mind, such as private server hostin
 4. Full **Docker Hub** image support, with built-in multi-user access and support for commercial instance hosting services.
 5. Distributed architecture, managing multiple machines from a single web panel.
 6. Lightweight technology stack. The entire project can be developed and maintained with TypeScript alone.
-7. ...and much more.
+7. **Commercial subsystem** (MCEManager additions): plans, templates, orders, payment, subscriptions, admin panel, notifications.
 
 <br />
 
@@ -60,220 +49,117 @@ MCSM also has **commercial applications** in mind, such as private server hostin
 
 The control panel runs on both **`Windows`** and **`Linux`** platforms. No database installation is required. Simply install the **`Node.js`** runtime and a few basic **decompression utilities**.
 
-> Requires **[Node.js 16.20.2](https://nodejs.org/en)** or higher.
+> Requires **[Node.js 20.x](https://nodejs.org/en)** or higher (Node 16 on CentOS 7).
 > It is recommended to use the **latest LTS version** for best compatibility and stability.
-
-<br />
-
-## Official Documentation
-
-English: https://docs.mcsmanager.com/
-
-Chinese: https://docs.mcsmanager.com/zh_cn/
 
 <br />
 
 ## Installation
 
+### Linux — One-click installer
+
+**Recommended.** Runs on Ubuntu 18.04+ / Debian 10+ / CentOS 7+ / RHEL 7+ / Arch Linux, requires **root**:
+
+```bash
+sudo su -c "wget -qO- https://raw.githubusercontent.com/xgp2012/MCEManager/master/install.sh | bash"
+```
+
+What it does:
+
+- Detects the OS and architecture, installs a bundled Node.js when needed.
+- Downloads the latest release and installs the **web** (panel + frontend) and **daemon** components into `/opt/mcemanager`.
+- Creates and starts the `mcem-web.service` and `mcem-daemon.service` systemd services.
+- Prints the panel address, daemon address/key and useful `systemctl` commands.
+
+Useful flags:
+
+```bash
+# install only one component
+... | bash -s -- --install web
+... | bash -s -- --install daemon
+
+# install as the mcsm user instead of root
+... | bash -s -- --user mcsm
+
+# install from a local tarball instead of downloading
+... | bash -s -- --install-source /path/to/mce_manager_linux_release.tar.gz
+```
+
+Management commands:
+
+```bash
+systemctl start|stop|restart|status mcem-web     # web panel
+systemctl start|stop|restart|status mcem-daemon  # daemon node
+```
+
+> Full guide, manual installation and configuration details: **[docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)** / **[docs/DEPLOYMENT_ZH.md](./docs/DEPLOYMENT_ZH.md)**
+
+<br />
+
 ### Windows
 
-**For Windows systems, it comes as a ready-to-run integrated version - download and run it immediately.**
+**For Windows systems, it comes as a ready-to-run integrated version — download and run it immediately.**
 
-Archive: https://download.mcsmanager.com/mcsmanager_windows_release.zip
-
-Double-click `start.bat` to launch both the web panel and daemon process.
+Build the release zip first (see below), then double-click `start.bat` to launch both the web panel and daemon process.
 
 <br />
 
-### Linux
-
-**One-line command quick installation**
+### Manual Installation (Linux / Windows / Mac)
 
 ```bash
-sudo su -c "wget -qO- https://script.mcsmanager.com/setup.sh | bash"
+# Step 1: Get the source code
+git clone https://github.com/xgp2012/MCEManager.git
+cd MCEManager
+
+# Step 2: Install dependencies and build
+# Linux
+./install-dependents.sh
+./build.sh
+
+# Windows
+install-dependents.bat
+build.bat
+
+# Step 3: The output is in production-code/
+#   production-code/web/app.js      -> web panel
+#   production-code/web/public/     -> compiled frontend
+#   production-code/daemon/app.js   -> daemon node
+
+# Step 4: Run (production)
+cd production-code/web
+npm install --production && node app.js
+
+# in another terminal
+cd production-code/daemon
+npm install --production && node app.js
 ```
 
-**Usage after installation**
+Default ports: panel `23333`, daemon `24444`. The web interface auto-detects and connects to the local daemon in most cases; otherwise add a node manually.
 
-```bash
-systemctl start mcsm-{web,daemon} # Start panel
-systemctl stop mcsm-{web,daemon}  # Stop panel
-```
-
-- Script only applies to Ubuntu/Centos/Debian/Archlinux
-- Panel code and runtime environment are automatically installed in the `/opt/mcsmanager/` directory.
+> These steps do **not** register the services. To keep them running in the background, use `screen`/`tmux` or the provided installer.
 
 <br />
 
-**Linux Manual Installation**
-
-- If the one-click installation method doesn't work, you can install MCSManager manually by following the steps below:
+### Building the release packages
 
 ```bash
-# Step 1: Navigate to the installation directory (create it if it doesn't exist)
-cd /opt/
+# Linux (produces mce_manager_linux_release.tar.gz)
+./scripts/release-build.sh
 
-# Step 2: (Optional) Download and install Node.js if it's not already installed
-wget https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz
-tar -xvf node-v20.11.0-linux-x64.tar.xz
-
-# Add Node.js and npm to the system path
-ln -s /opt/node-v20.11.0-linux-x64/bin/node /usr/bin/node
-ln -s /opt/node-v20.11.0-linux-x64/bin/npm /usr/bin/npm
-
-# Step 3: Prepare the MCSManager installation directory
-mkdir /opt/mcsmanager/
-cd /opt/mcsmanager/
-
-# Step 4: Download the latest MCSManager release
-wget https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_linux_release.tar.gz
-tar -zxf mcsmanager_linux_release.tar.gz
-
-# Step 5: Install dependencies
-chmod 775 install.sh
-./install.sh
-
-# Step 6: Open two terminal windows or use screen/tmux
-
-# In the first terminal: start the daemon
-./start-daemon.sh
-
-# In the second terminal: start the web service
-./start-web.sh
-
-# Step 7: Access the panel in your browser
-# Replace <public IP> with your server's actual IP address
-http://<public IP>:23333/
-
-# The web interface will automatically detect and connect to the local daemon in most cases.
+# Windows (produces mce_manager_windows_release.zip)
+powershell -ExecutionPolicy Bypass -File scripts/release-build.ps1
 ```
 
-> The above steps do **not** register the panel as a system service.  
-> To keep it running in the background, you’ll need to use tools like **`screen`** or **`tmux`**.
-
-If you prefer to run MCSManager as a system service, please refer to the official documentation for setup instructions.
+The tarball is what `install.sh` downloads from GitHub Releases (`mce_manager_linux_release.tar.gz`), so publishing a GitHub release makes the one-click installer work out of the box.
 
 <br />
 
-### Mac OS
+## Documentation
 
-```bash
-
-# Step 1: Install Node.js (skip if already installed)
-# It's recommended to use the latest LTS version
-brew install node
-node -v
-npm -v
-
-# Step 2: Download the latest release using curl
-curl -L https://github.com/MCSManager/MCSManager/releases/latest/download/mcsmanager_linux_release.tar.gz -o mcsmanager_linux_release.tar.gz
-
-# Step 3: Extract the downloaded archive
-tar -zxf mcsmanager_linux_release.tar.gz
-
-# Step 4: Enter the extracted directory
-cd mcsmanager
-
-# Step 5: Make the installer executable and run it
-chmod 775 install.sh
-./install.sh
-
-# Step 6: Open two terminal windows or use screen/tmux to run services in parallel
-
-# In the first terminal: start the daemon
-./start-daemon.sh
-
-# In the second terminal: start the web service
-./start-web.sh
-
-# Access the panel at: http://localhost:23333/
-# The web interface will typically auto-detect and connect to the local daemon.
-```
-
-<br />
-
-### Docker Installation
-
-Install the panel using docker-compose.yml, note that you need to modify all `<CHANGE_ME_TO_INSTALL_PATH>` in it to your actual installation directory.
-
-```yml
-services:
-  web:
-    image: githubyumao/mcsmanager-web:latest
-    ports:
-      - "23333:23333"
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - <CHANGE_ME_TO_INSTALL_PATH>/web/data:/opt/mcsmanager/web/data
-      - <CHANGE_ME_TO_INSTALL_PATH>/web/logs:/opt/mcsmanager/web/logs
-      - <CHANGE_ME_TO_INSTALL_PATH>/web/public/upload_files:/opt/mcsmanager/web/public/upload_files
-
-  daemon:
-    image: githubyumao/mcsmanager-daemon:latest
-    restart: unless-stopped
-    ports:
-      - "24444:24444"
-    environment:
-      - MCSM_DOCKER_WORKSPACE_PATH=<CHANGE_ME_TO_INSTALL_PATH>/daemon/data/InstanceData
-    volumes:
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/data:/opt/mcsmanager/daemon/data
-      - <CHANGE_ME_TO_INSTALL_PATH>/daemon/logs:/opt/mcsmanager/daemon/logs
-      - /var/run/docker.sock:/var/run/docker.sock
-```
-
-Note (Rootless Docker on Linux): the daemon supports `DOCKER_HOST`. If your Docker daemon runs in rootless mode, the socket is usually at `/run/user/<uid>/docker.sock` instead of `/var/run/docker.sock`. In that case, replace the default socket mount with the rootless socket and set `DOCKER_HOST`, for example:
-
-```yml
-daemon:
-  environment:
-    - DOCKER_HOST=unix:///run/user/1000/docker.sock
-  volumes:
-    - /run/user/1000/docker.sock:/run/user/1000/docker.sock
-```
-
-Replace `1000` with your actual UID (`id -u`).
-
-Enable using docker-compose.
-
-```bash
-mkdir -p <CHANGE_ME_TO_INSTALL_PATH>
-cd <CHANGE_ME_TO_INSTALL_PATH>
-vim docker-compose.yml # Write the above docker-compose.yml content here
-docker compose pull && docker compose up -d
-```
-
-Note: After Docker installation, the Web side may no longer be able to automatically connect to the Daemon.
-
-At this point, if you enter the panel, you should see some errors because the Web side has not successfully connected to the daemon side, you need to create a new node to connect them together.
-
-<br />
-
-## Contributing Code
-
-Before contributing code to this project, please make sure to review the following:
-
-- **Must read:** [Issue #599 – Contribution Guidelines](https://github.com/MCSManager/MCSManager/issues/599)
-- Please maintain the existing code structure and formatting, **do not apply unnecessary or excessive formatting changes.**
-- All submitted code **must follow internationalization (i18n) standards**.
-
-### Bug Reports
-
-We welcome all bug reports and feedback. Your contributions help us improve the project.
-
-If you encounter any issues, please report them via the [GitHub Issues](https://github.com/MCSManager/MCSManager/issues) page, and we’ll address them as soon as possible.
-
-For serious **security vulnerabilities** that should not be disclosed publicly, please contact us directly at: **support@mcsmanager.com**
-
-Once resolved, we will credit the discoverer in the relevant code or release notes.
-
-### Acknowledgements
-
-Thanks to the following developers for making important contributions to the security testing of MCSManager!
-
-> [@Cuo256](https://github.com/Cuo256), [@xiaosu](https://github.com/xiaosuawa), [@tianjiefeifei](https://github.com/tianjiefeifei), [9Bakabaka](https://github.com/9Bakabaka)
+- **Deployment guide (EN):** [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md)
+- **部署指南（中文）:** [`docs/DEPLOYMENT_ZH.md`](./docs/DEPLOYMENT_ZH.md)
+- **Security audit:** [`SECURITY_AUDIT.md`](./SECURITY_AUDIT.md)
+- **Design & roadmap:** [`plants.md`](./plants.md)
 
 <br />
 
@@ -281,11 +167,12 @@ Thanks to the following developers for making important contributions to the sec
 
 ### Project Structure
 
-The project comprises three core modules:
+The project comprises four core modules:
 
-- Daemon backend (`daemon` directory)
-- Web backend (`panel` directory)
-- Web frontend (`frontend` directory)
+- Daemon backend (`daemon` directory) — process/Docker/file/terminal management
+- Web backend (`panel` directory) — users, auth, nodes, API, and the commercial subsystem
+- Web frontend (`frontend` directory) — UI
+- Common library (`common` directory) — shared code
 
 **Web Backend Responsibilities:**
 
@@ -293,6 +180,7 @@ The project comprises three core modules:
 - Node connectivity
 - Authentication and authorization
 - API services
+- Orders, payment, provisioning, subscriptions, admin panel (MCEManager)
 
 **Daemon Backend Responsibilities:**
 
@@ -309,13 +197,16 @@ The project comprises three core modules:
 
 ### Setting Up Development Environment
 
-See: [DEVELOPMENT.md](./DEVELOPMENT.md)
+```bash
+npm run install   # install all dependencies + build common
+npm run dev       # runs daemon + panel + frontend concurrently
+```
 
 <br />
 
 ## Browser Compatibility
 
-MCSManager supports all major modern browsers, including:
+MCEManager supports all major modern browsers, including:
 
 - `Chrome`
 - `Firefox`
@@ -326,14 +217,8 @@ MCSManager supports all major modern browsers, including:
 
 <br />
 
-## Contributors
-
-<a href="https://openomy.com/MCSManager/MCSManager" target="_blank" style="display: block; width: 100%;" align="center">
-  <img src="https://openomy.com/svg?repo=MCSManager/MCSManager&chart=bubble&latestMonth=12" target="_blank" alt="Contribution Leaderboard" style="display: block; width: 100%;" />
-</a>
-
 ## License
 
 This project is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
-&copy; 2025 MCSManager. All rights reserved.
+© 2025 xgp2012 / MCSManager. All rights reserved.

@@ -15,7 +15,7 @@ MCEManager 是基于 MCSManager 的商业版面板，新增了开放注册、邮
 需要 **root** 权限，支持 Ubuntu 18.04+ / Debian 10+ / CentOS 7+ / RHEL 7+ / Arch Linux。
 
 ```bash
-sudo su -c "wget -qO- https://raw.githubusercontent.com/xgp2012/MCEManager/main/install.sh | bash"
+sudo su -c "wget -qO- https://raw.githubusercontent.com/xgp2012/MCEManager/master/install.sh | bash"
 ```
 
 脚本功能：

@@ -3,6 +3,10 @@ name: Release Build
 on:
   release:
     types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -26,45 +30,48 @@ jobs:
       - name: Add binaries to production files
         run: wget --input-file=lib-urls.txt --directory-prefix=production-code/daemon/lib/
 
-      - name: Create linux and windows build
+      - name: Stage linux and windows builds
         run: |
           cp -r production-code dist_linux
           mv production-code dist_windows
+          mv dist_linux mcemanager_linux
+          mv dist_windows mcemanager_windows
 
       - name: Copy startup scripts
         run: |
-          cp prod-scripts/linux/* dist_linux/
-          cp prod-scripts/windows/* dist_windows/
+          cp prod-scripts/linux/* mcemanager_linux/
+          cp prod-scripts/windows/* mcemanager_windows/
 
       - name: Copy license
         run: |
-          cp LICENSE dist_linux/LICENSE
-          cp LICENSE dist_windows/LICENSE
+          cp LICENSE mcemanager_linux/LICENSE
+          cp LICENSE mcemanager_windows/LICENSE
 
       - name: Copy node runtime to windows build
         run: |
-          wget https://nodejs.org/download/release/latest-v20.x/win-x64/node.exe -O dist_windows/daemon/node_app.exe
-          cp dist_windows/daemon/node_app.exe dist_windows/web/node_app.exe
+          wget https://nodejs.org/download/release/latest-v20.x/win-x64/node.exe -O mcemanager_windows/daemon/node_app.exe
+          cp mcemanager_windows/daemon/node_app.exe mcemanager_windows/web/node_app.exe
 
       - name: Create archive
         run: |
-          mv dist_linux/ mcsmanager/
-          tar czf mcsmanager_linux_release.tar.gz mcsmanager/
-          tar --exclude='mcsmanager/daemon' --exclude='mcsmanager/start-daemon.sh' -czf mcsmanager_linux_web_only_release.tar.gz mcsmanager/
-          tar --exclude='mcsmanager/web' --exclude='mcsmanager/start-web.sh' -czf mcsmanager_linux_daemon_only_release.tar.gz mcsmanager/
-          rm -rf mcsmanager/
-          mv dist_windows/ mcsmanager/
-          zip -r mcsmanager_windows_release.zip mcsmanager/
-          zip -r mcsmanager_windows_web_only_release.zip mcsmanager/ -x "mcsmanager/daemon/*"
-          zip -r mcsmanager_windows_daemon_only_release.zip mcsmanager/ -x "mcsmanager/web/*"
+          mv mcemanager_linux/ mcemanager/
+          tar czf mce_manager_linux_release.tar.gz mcemanager/
+          tar --exclude='mcemanager/daemon' --exclude='mcemanager/start-daemon.sh' -czf mce_manager_linux_web_only_release.tar.gz mcemanager/
+          tar --exclude='mcemanager/web' --exclude='mcemanager/start-web.sh' -czf mce_manager_linux_daemon_only_release.tar.gz mcemanager/
+          rm -rf mcemanager/
+          mv mcemanager_windows/ mcemanager/
+          zip -r mce_manager_windows_release.zip mcemanager/
+          zip -r mce_manager_windows_web_only_release.zip mcemanager/ -x "mcemanager/daemon/*"
+          zip -r mce_manager_windows_daemon_only_release.zip mcemanager/ -x "mcemanager/web/*"
 
       - name: Upload assets to release
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            mcsmanager_windows_release.zip
-            mcsmanager_windows_web_only_release.zip
-            mcsmanager_windows_daemon_only_release.zip
-            mcsmanager_linux_release.tar.gz
-            mcsmanager_linux_web_only_release.tar.gz
-            mcsmanager_linux_daemon_only_release.tar.gz
+            mce_manager_windows_release.zip
+            mce_manager_windows_web_only_release.zip
+            mce_manager_windows_daemon_only_release.zip
+            mce_manager_linux_release.tar.gz
+            mce_manager_linux_web_only_release.tar.gz
+            mce_manager_linux_daemon_only_release.tar.gz
