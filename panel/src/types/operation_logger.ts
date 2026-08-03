@@ -20,9 +20,35 @@ export enum OperationLoggerAction {
   UserCreate = "user_create",
   UserDelete = "user_delete",
   UserConfigChange = "user_config_change",
+  UserRegister = "user_register",
   UserLogin = "user_login",
   SsoUnbind = "sso_unbind",
-  SystemConfigChange = "system_config_change"
+  SystemConfigChange = "system_config_change",
+  PlanCreate = "plan_create",
+  PlanUpdate = "plan_update",
+  PlanDelete = "plan_delete",
+  TemplateCreate = "template_create",
+  TemplateUpdate = "template_update",
+  TemplateDelete = "template_delete",
+  TemplateImport = "template_import",
+  TemplateClone = "template_clone",
+  // Phase 5: admin panel operations
+  UserStatusChange = "user_status_change",
+  UserBalanceChange = "user_balance_change",
+  UserImpersonate = "user_impersonate",
+  OrderRetryProvision = "order_retry_provision",
+  OrderRefund = "order_refund",
+  OrderMarkPaid = "order_mark_paid",
+  SubscriptionForceCancel = "subscription_force_cancel",
+  SubscriptionRenewNow = "subscription_renew_now",
+  SubscriptionAutoRenewChange = "subscription_auto_renew_change",
+  InstanceExtend = "instance_extend",
+  InstanceSuspend = "instance_suspend",
+  InstanceResume = "instance_resume",
+  InstanceBandwidthChange = "instance_bandwidth_change",
+  PayConfigChange = "pay_config_change",
+  EmailConfigChange = "email_config_change",
+  BusinessSettingChange = "business_setting_change"
 }
 
 export type GlobalGeneralOptions = {
@@ -136,6 +162,10 @@ export type UserConfigChangeOptions = {
   type: "user_config_change";
 } & GlobalGeneralOptions;
 
+export type UserRegisterOptions = {
+  type: "user_register";
+} & GlobalGeneralOptions;
+
 export type UserLoginOptions = {
   type: "user_login";
   login_result: boolean;
@@ -149,6 +179,143 @@ export type SsoUnbindOptions = {
 
 export type SystemConfigChangeOptions = {
   type: "system_config_change";
+} & GlobalGeneralOptions;
+
+export type PlanCreateOptions = {
+  type: "plan_create";
+  plan_id: string;
+  plan_name: string;
+} & GlobalGeneralOptions;
+
+export type PlanUpdateOptions = {
+  type: "plan_update";
+  plan_id: string;
+  plan_name?: string;
+} & GlobalGeneralOptions;
+
+export type PlanDeleteOptions = {
+  type: "plan_delete";
+  plan_id: string;
+  plan_name?: string;
+} & GlobalGeneralOptions;
+
+export type TemplateCreateOptions = {
+  type: "template_create";
+  template_id: string;
+  template_name: string;
+} & GlobalGeneralOptions;
+
+export type TemplateUpdateOptions = {
+  type: "template_update";
+  template_id: string;
+  template_name?: string;
+} & GlobalGeneralOptions;
+
+export type TemplateDeleteOptions = {
+  type: "template_delete";
+  template_id: string;
+  template_name?: string;
+} & GlobalGeneralOptions;
+
+export type TemplateImportOptions = {
+  type: "template_import";
+  template_id: string;
+  template_name?: string;
+} & GlobalGeneralOptions;
+
+export type TemplateCloneOptions = {
+  type: "template_clone";
+  template_id: string;
+  template_name?: string;
+} & GlobalGeneralOptions;
+
+export type UserStatusChangeOptions = {
+  type: "user_status_change";
+  target_user_name: string;
+  from_status?: string;
+  to_status?: string;
+} & GlobalGeneralOptions;
+
+export type UserBalanceChangeOptions = {
+  type: "user_balance_change";
+  target_user_name: string;
+  change: string;
+} & GlobalGeneralOptions;
+
+export type UserImpersonateOptions = {
+  type: "user_impersonate";
+  target_user_name: string;
+} & GlobalGeneralOptions;
+
+export type OrderRetryProvisionOptions = {
+  type: "order_retry_provision";
+  order_id: string;
+} & GlobalGeneralOptions;
+
+export type OrderRefundOptions = {
+  type: "order_refund";
+  order_id: string;
+} & GlobalGeneralOptions;
+
+export type OrderMarkPaidOptions = {
+  type: "order_mark_paid";
+  order_id: string;
+} & GlobalGeneralOptions;
+
+export type SubscriptionForceCancelOptions = {
+  type: "subscription_force_cancel";
+  subscription_id: string;
+} & GlobalGeneralOptions;
+
+export type SubscriptionRenewNowOptions = {
+  type: "subscription_renew_now";
+  subscription_id: string;
+} & GlobalGeneralOptions;
+
+export type SubscriptionAutoRenewChangeOptions = {
+  type: "subscription_auto_renew_change";
+  subscription_id: string;
+  enabled: string;
+} & GlobalGeneralOptions;
+
+export type InstanceExtendOptions = {
+  type: "instance_extend";
+  instance_id: string;
+  daemon_id: string;
+  instance_name?: string;
+} & GlobalGeneralOptions;
+
+export type InstanceSuspendOptions = {
+  type: "instance_suspend";
+  instance_id: string;
+  daemon_id: string;
+  instance_name?: string;
+} & GlobalGeneralOptions;
+
+export type InstanceResumeOptions = {
+  type: "instance_resume";
+  instance_id: string;
+  daemon_id: string;
+  instance_name?: string;
+} & GlobalGeneralOptions;
+
+export type InstanceBandwidthChangeOptions = {
+  type: "instance_bandwidth_change";
+  instance_id: string;
+  daemon_id: string;
+  instance_name?: string;
+} & GlobalGeneralOptions;
+
+export type PayConfigChangeOptions = {
+  type: "pay_config_change";
+} & GlobalGeneralOptions;
+
+export type EmailConfigChangeOptions = {
+  type: "email_config_change";
+} & GlobalGeneralOptions;
+
+export type BusinessSettingChangeOptions = {
+  type: "business_setting_change";
 } & GlobalGeneralOptions;
 
 export type OperationLoggerItem =
@@ -173,9 +340,34 @@ export type OperationLoggerItem =
   | UserCreateOptions
   | UserDeleteOptions
   | UserConfigChangeOptions
+  | UserRegisterOptions
   | UserLoginOptions
   | SsoUnbindOptions
-  | SystemConfigChangeOptions;
+  | SystemConfigChangeOptions
+  | PlanCreateOptions
+  | PlanUpdateOptions
+  | PlanDeleteOptions
+  | TemplateCreateOptions
+  | TemplateUpdateOptions
+  | TemplateDeleteOptions
+  | TemplateImportOptions
+  | TemplateCloneOptions
+  | UserStatusChangeOptions
+  | UserBalanceChangeOptions
+  | UserImpersonateOptions
+  | OrderRetryProvisionOptions
+  | OrderRefundOptions
+  | OrderMarkPaidOptions
+  | SubscriptionForceCancelOptions
+  | SubscriptionRenewNowOptions
+  | SubscriptionAutoRenewChangeOptions
+  | InstanceExtendOptions
+  | InstanceSuspendOptions
+  | InstanceResumeOptions
+  | InstanceBandwidthChangeOptions
+  | PayConfigChangeOptions
+  | EmailConfigChangeOptions
+  | BusinessSettingChangeOptions;
 
 export type OperationLoggerItemPayload = {
   [T in OperationLoggerItem["type"]]: Omit<Extract<OperationLoggerItem, { type: T }>, "type">

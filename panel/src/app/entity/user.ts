@@ -5,6 +5,13 @@ export enum UserPassWordType {
   bcrypt = 1
 }
 
+export enum UserStatus {
+  PENDING_VERIFY = 0, // waiting for email verification
+  ACTIVE = 1, // normal
+  SUSPENDED = 2, // suspended / banned
+  EXPIRED = 3 // subscription expired
+}
+
 export interface IUserApp {
   instanceUuid: string;
   daemonId: string;
@@ -27,6 +34,12 @@ export class User implements IUser {
   open2FA = false;
   ssoSub = "";
   ssoBound = false;
+  email = "";
+  emailVerified = false;
+  emailVerifyToken = "";
+  emailVerifyExpire = 0;
+  status: number = UserStatus.ACTIVE;
+  balance = 0;
 }
 
 export enum ROLE {

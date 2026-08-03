@@ -74,6 +74,43 @@ export default class SystemConfig {
   registerCode = "";
   // -----
 
+  // Whether public user registration is allowed
+  registerEnabled = false;
+
+  // SMTP mail service configuration
+  smtpEnabled = false;
+  smtpHost = "";
+  smtpPort = 465;
+  smtpSecure = true;
+  smtpUser = "";
+  smtpPass = "";
+  smtpFrom = "";
+  smtpFromName = "";
+
+  // Email notification templates (only sent when SMTP is enabled)
+  notifyOrderSuccess = true;          // order paid & provisioned successfully
+  notifyExpiryReminder = true;        // subscription expires within N days
+  expiryReminderDays = 3;             // remind N days before the period ends
+  notifyPaymentFailure = true;        // auto-renewal balance deduction failed
+  notifyAdminAlert = false;           // admin alerts (e.g. node offline)
+  adminAlertEmails = "";              // comma-separated recipients for admin alerts
+  // -----
+
+  // Payment gateway configuration (Yipay / 易支付)
+  payEnabled = false;
+  // Currency unit, e.g. "CNY" / "USD"
+  currency = "CNY";
+  // Order expiration time in minutes (0 = never expire)
+  orderExpireMinutes = 30;
+  // Default / recommended plan shown in the store front (optional)
+  defaultPlanUuid = "";
+  // Standard Yipay gateway options
+  yipayApiUrl = "";
+  yipayPid = "";
+  yipayKey = "";
+  yipaySignType = "MD5";
+  // -----
+
   // SSO / OpenID Connect / OAuth 2.0
   ssoEnabled = false;
   ssoType: "oidc" | "oauth2" = "oidc";

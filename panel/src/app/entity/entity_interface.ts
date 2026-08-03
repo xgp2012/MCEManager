@@ -28,6 +28,12 @@ export interface IUser {
   open2FA?: boolean;
   ssoSub?: string;
   ssoBound?: boolean;
+  email?: string;
+  emailVerified?: boolean;
+  emailVerifyToken?: string;
+  emailVerifyExpire?: number;
+  status?: number;
+  balance?: number;
 }
 
 export interface ICompleteUser {

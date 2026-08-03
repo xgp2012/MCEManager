@@ -72,6 +72,55 @@ class OperationLogger {
     return this.#storage.tail<OperationLoggerItem>("global", limit);
   }
 
+  /**
+   * Fetch all operation log items matching the filters, sorted by time desc.
+   */
+  async queryAll(filters: { level?: string; type?: string; keyword?: string } = {}) {
+    const currentBuffer = this.#buffer;
+    this.#buffer = new Map();
+    await this.flushAsync(currentBuffer);
+    const all = (await this.#storage.readAll("global")) as OperationLoggerItem[];
+    const { level, type, keyword } = filters;
+    const filtered = all.filter((item) => {
+      if (level && item.operation_level !== level) return false;
+      if (type && item.type !== type) return false;
+      if (keyword) {
+        const operator = String((item as any).operator_name || "");
+        const target = String(
+          (item as any).target_user_name || (item as any).instance_name || (item as any).order_id || ""
+        );
+        if (!operator.includes(keyword) && !target.includes(keyword)) return false;
+      }
+      return true;
+    });
+    filtered.sort((a, b) =>
+      String(b.operation_time).localeCompare(String(a.operation_time))
+    );
+    return filtered;
+  }
+
+  /**
+   * Paginated operation log query for the admin log page.
+   * Filters by level / action type / operator keyword. Sorted by time desc.
+   */
+  async getPage(
+    page = 1,
+    pageSize = 20,
+    filters: { level?: string; type?: string; keyword?: string } = {}
+  ) {
+    const filtered = await this.queryAll(filters);
+    const total = filtered.length;
+    const maxPage = Math.max(1, Math.ceil(total / pageSize));
+    const start = (page - 1) * pageSize;
+    return {
+      page,
+      pageSize,
+      maxPage,
+      total,
+      data: filtered.slice(start, start + pageSize)
+    };
+  }
+
   info<T extends keyof OperationLoggerItemPayload>(type: T, payload: CleanPayload<T>) {
     return this.log(type, payload, "info");
   }

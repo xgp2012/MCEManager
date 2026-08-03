@@ -92,6 +92,10 @@ const openBuyInstanceDialog = async () => {
   router.push({ path: "/shop" });
 };
 
+const openRegisterPage = () => {
+  router.push({ path: "/register" });
+};
+
 const handleSsoLogin = () => {
   window.location.href = "/api/auth/sso/authorize";
 };
@@ -260,6 +264,15 @@ onMounted(async () => {
                 </div>
               </div>
 
+              <div v-if="appConfig.settings.registerEnabled && !ssoInfo?.onlyMode" class="register-link">
+                <a-typography-text type="secondary">
+                  {{ t("TXT_CODE_AUTH_TO_REGISTER") }}
+                </a-typography-text>
+                <a-button type="link" @click="openRegisterPage">
+                  {{ t("TXT_CODE_11d5caea") }}
+                </a-button>
+              </div>
+
               <div v-if="ssoInfo?.enabled && !ssoInfo?.onlyMode" class="sso-divider-section">
                 <a-divider>{{ t("TXT_CODE_SSO_LOGIN_DIVIDER") }}</a-divider>
                 <a-button size="large" block @click="handleSsoLogin">
@@ -314,6 +327,12 @@ onMounted(async () => {
   input {
     background-color: transparent;
     caret-color: #fff;
+  }
+  .register-link {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 8px;
   }
 }
 </style>

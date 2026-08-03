@@ -2,10 +2,28 @@ import { $t as t } from "@/lang/i18n";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { useLayoutContainerStore } from "@/stores/useLayoutContainerStore";
 import type { LoginUserInfo } from "@/types/user";
+import AdminLayout from "@/views/admin/AdminLayout.vue";
+import DashboardPage from "@/views/admin/Dashboard.vue";
+import InstanceListPage from "@/views/admin/InstanceList.vue";
 import InstallPage from "@/views/Install.vue";
 import LayoutContainer from "@/views/LayoutContainer.vue";
 import LoginPage from "@/views/Login.vue";
+import LogsPage from "@/views/admin/Logs.vue";
+import NodeListPage from "@/views/admin/NodeList.vue";
+import OrderListPageAdmin from "@/views/admin/OrderList.vue";
+import PlanManagement from "@/views/admin/PlanManagement.vue";
+import RegisterPage from "@/views/Register.vue";
+import SettingsPage from "@/views/admin/Settings.vue";
 import SsoBindLogin from "@/views/SsoBindLogin.vue";
+import SubscriptionListPageAdmin from "@/views/admin/SubscriptionList.vue";
+import TemplateManagement from "@/views/admin/TemplateManagement.vue";
+import UserListPage from "@/views/admin/UserList.vue";
+import VerifyEmailPage from "@/views/VerifyEmail.vue";
+import OrderListPage from "@/views/shop/OrderList.vue";
+import OrderResultPage from "@/views/shop/OrderResult.vue";
+import ShopPage from "@/views/shop/Shop.vue";
+import SubscriptionListPage from "@/views/shop/SubscriptionList.vue";
+import TemplateMarketPage from "@/views/shop/TemplateMarket.vue";
 import {
   createRouter,
   createWebHashHistory,
@@ -297,6 +315,25 @@ const originRouterConfig: RouterConfig[] = [
     }
   },
   {
+    path: "/register",
+    name: t("TXT_CODE_11d5caea"),
+    component: RegisterPage,
+    meta: {
+      permission: ROLE.GUEST,
+      onlyDisplayEditMode: true,
+      customClass: ["nav-button-warning"]
+    }
+  },
+  {
+    path: "/verify-email",
+    name: t("TXT_CODE_AUTH_VERIFY_SUCCESS"),
+    component: VerifyEmailPage,
+    meta: {
+      permission: ROLE.GUEST,
+      mainMenu: false
+    }
+  },
+  {
     path: "/_open_page",
     name: t("TXT_CODE_2cf59872"),
     component: LayoutContainer,
@@ -319,7 +356,7 @@ const originRouterConfig: RouterConfig[] = [
   {
     path: "/shop",
     name: t("TXT_CODE_5a408a5e"),
-    component: LayoutContainer,
+    component: ShopPage,
     meta: {
       permission: ROLE.GUEST,
       mainMenu: true,
@@ -328,6 +365,134 @@ const originRouterConfig: RouterConfig[] = [
         return appConfig.settings.businessMode;
       }
     }
+  },
+  {
+    path: "/shop/market",
+    name: t("TXT_CODE_TEMPLATE_MARKET"),
+    component: TemplateMarketPage,
+    meta: {
+      permission: ROLE.GUEST,
+      mainMenu: false
+    }
+  },
+  {
+    path: "/shop/subscriptions",
+    name: t("TXT_CODE_SUBSCRIPTION_MANAGEMENT"),
+    component: SubscriptionListPage,
+    meta: {
+      permission: ROLE.USER,
+      mainMenu: false
+    }
+  },
+  {
+    path: "/shop/orders",
+    name: t("TXT_CODE_ORDER_LIST"),
+    component: OrderListPage,
+    meta: {
+      permission: ROLE.USER,
+      mainMenu: false
+    }
+  },
+  {
+    path: "/order-result",
+    name: t("TXT_CODE_ORDER_RESULT_TITLE"),
+    component: OrderResultPage,
+    meta: {
+      permission: ROLE.GUEST,
+      mainMenu: false
+    }
+  },
+  {
+    path: "/admin",
+    name: t("TXT_CODE_ADMIN_TITLE"),
+    component: AdminLayout,
+    meta: {
+      permission: ROLE.ADMIN,
+      mainMenu: false,
+      redirect: "/admin/dashboard"
+    },
+    children: [
+      {
+        path: "/admin/dashboard",
+        name: t("TXT_CODE_ADMIN_DASHBOARD"),
+        component: DashboardPage,
+        meta: {
+          permission: ROLE.ADMIN
+        }
+      },
+      {
+        path: "/admin/users",
+        name: t("TXT_CODE_ADMIN_USERS"),
+        component: UserListPage,
+        meta: {
+          permission: ROLE.ADMIN
+        }
+      },
+      {
+        path: "/admin/orders",
+        name: t("TXT_CODE_ADMIN_ORDERS"),
+        component: OrderListPageAdmin,
+        meta: {
+          permission: ROLE.ADMIN
+        }
+      },
+      {
+        path: "/admin/subscriptions",
+        name: t("TXT_CODE_ADMIN_SUBSCRIPTIONS"),
+        component: SubscriptionListPageAdmin,
+        meta: {
+          permission: ROLE.ADMIN
+        }
+      },
+      {
+        path: "/admin/instances",
+        name: t("TXT_CODE_ADMIN_INSTANCES"),
+        component: InstanceListPage,
+        meta: {
+          permission: ROLE.ADMIN
+        }
+      },
+      {
+        path: "/admin/nodes",
+        name: t("TXT_CODE_ADMIN_NODES"),
+        component: NodeListPage,
+        meta: {
+          permission: ROLE.ADMIN
+        }
+      },
+      {
+        path: "/admin/plans",
+        name: t("TXT_CODE_PLAN_MANAGEMENT"),
+        component: PlanManagement,
+        meta: {
+          permission: ROLE.ADMIN
+        }
+      },
+      {
+        path: "/admin/templates",
+        name: t("TXT_CODE_TEMPLATE_MANAGEMENT"),
+        component: TemplateManagement,
+        meta: {
+          permission: ROLE.ADMIN
+        }
+      },
+      {
+        path: "/admin/logs",
+        name: t("TXT_CODE_ADMIN_LOGS"),
+        component: LogsPage,
+        meta: {
+          permission: ROLE.ADMIN
+        }
+      },
+      {
+        path: "/admin/settings",
+        name: t("TXT_CODE_ADMIN_SETTINGS"),
+        component: SettingsPage,
+        meta: {
+          permission: ROLE.ADMIN
+        }
+      }
+    ]
   }
 ];
 
@@ -407,7 +572,16 @@ router.beforeEach(async (to, from, next) => {
   if (
     toRoutePath.includes("_open_page") ||
     toRoutePath.startsWith("/sso/") ||
-    ["/shop", "/login", "/install", "/404"].includes(toRoutePath)
+    [
+      "/shop",
+      "/shop/market",
+      "/order-result",
+      "/login",
+      "/install",
+      "/404",
+      "/register",
+      "/verify-email"
+    ].includes(toRoutePath)
   ) {
     return next();
   }

@@ -48,6 +48,49 @@ export const loginUser = useDefineApi<
   method: "POST"
 });
 
+export const registerUser = useDefineApi<
+  {
+    data: {
+      username: string;
+      password: string;
+      email: string;
+    };
+  },
+  {
+    uuid: string;
+    userName: string;
+    email: string;
+  }
+>({
+  url: "/api/auth/register",
+  method: "POST"
+});
+
+export const verifyEmail = useDefineApi<
+  {
+    params: {
+      token: string;
+      email: string;
+    };
+  },
+  boolean
+>({
+  url: "/api/auth/verify-email",
+  method: "GET"
+});
+
+export const resendVerification = useDefineApi<
+  {
+    data: {
+      email: string;
+    };
+  },
+  boolean
+>({
+  url: "/api/auth/resend-verification",
+  method: "POST"
+});
+
 export const loginPageInfo = useDefineApi<
   any,
   {

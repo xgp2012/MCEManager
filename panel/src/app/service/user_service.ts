@@ -51,6 +51,12 @@ class UserSubsystem {
     if (config.open2FA != null) instance.open2FA = Boolean(config.open2FA);
     if (config.ssoSub != null) instance.ssoSub = String(config.ssoSub);
     if (config.ssoBound != null) instance.ssoBound = Boolean(config.ssoBound);
+    if (config.email != null) instance.email = String(config.email);
+    if (config.emailVerified != null) instance.emailVerified = Boolean(config.emailVerified);
+    if (config.emailVerifyToken != null) instance.emailVerifyToken = String(config.emailVerifyToken);
+    if (config.emailVerifyExpire != null) instance.emailVerifyExpire = Number(config.emailVerifyExpire);
+    if (config.status != null) instance.status = Number(config.status);
+    if (config.balance != null) instance.balance = Number(config.balance);
     if (config.instances) this.setUserInstances(uuid, config.instances);
     if (config.passWord) {
       instance.passWordType = UserPassWordType.bcrypt;
@@ -142,6 +148,16 @@ class UserSubsystem {
     for (const map of this.objects) {
       const user = map[1];
       if (user.userName === userName) return user;
+    }
+    return null;
+  }
+
+  getUserByEmail(email: string) {
+    if (!email) return null;
+    const target = String(email).toLowerCase();
+    for (const map of this.objects) {
+      const user = map[1];
+      if (user.email && user.email.toLowerCase() === target) return user;
     }
     return null;
   }

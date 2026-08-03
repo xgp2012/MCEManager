@@ -102,6 +102,8 @@ export interface Settings {
   ssoClientId: string;
   ssoClientSecret: string;
   ssoCallbackUrl: string;
+  registerEnabled: boolean;
+  smtpEnabled: boolean;
 }
 
 export interface ImageInfo {
@@ -262,5 +264,7 @@ export interface PanelStatus {
     panelId: string;
     ssoEnabled: boolean;
     ssoOnlyMode: boolean;
+    registerEnabled: boolean;
+    smtpEnabled: boolean;
   };
 }

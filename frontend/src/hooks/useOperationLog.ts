@@ -131,6 +131,102 @@ const renderMap: OperationRenderer = {
   system_config_change: (item) => ({
     text: t("TXT_CODE_d6312bd5"),
     data: [item.operator_name || item.operation_id]
+  }),
+  plan_create: (item) => ({
+    text: t("TXT_CODE_OPLOG_PLAN_CREATE"),
+    data: [item.operator_name || item.operation_id, item.plan_name || item.plan_id]
+  }),
+  plan_update: (item) => ({
+    text: t("TXT_CODE_OPLOG_PLAN_UPDATE"),
+    data: [item.operator_name || item.operation_id, item.plan_name || item.plan_id]
+  }),
+  plan_delete: (item) => ({
+    text: t("TXT_CODE_OPLOG_PLAN_DELETE"),
+    data: [item.operator_name || item.operation_id, item.plan_name || item.plan_id]
+  }),
+  template_create: (item) => ({
+    text: t("TXT_CODE_OPLOG_TEMPLATE_CREATE"),
+    data: [item.operator_name || item.operation_id, item.template_name || item.template_id]
+  }),
+  template_update: (item) => ({
+    text: t("TXT_CODE_OPLOG_TEMPLATE_UPDATE"),
+    data: [item.operator_name || item.operation_id, item.template_name || item.template_id]
+  }),
+  template_delete: (item) => ({
+    text: t("TXT_CODE_OPLOG_TEMPLATE_DELETE"),
+    data: [item.operator_name || item.operation_id, item.template_name || item.template_id]
+  }),
+  template_import: (item) => ({
+    text: t("TXT_CODE_OPLOG_TEMPLATE_IMPORT"),
+    data: [item.operator_name || item.operation_id, item.template_name || item.template_id]
+  }),
+  template_clone: (item) => ({
+    text: t("TXT_CODE_OPLOG_TEMPLATE_CLONE"),
+    data: [item.operator_name || item.operation_id, item.template_name || item.template_id]
+  }),
+  user_status_change: (item) => ({
+    text: t("TXT_CODE_OPLOG_USER_STATUS_CHANGE"),
+    data: [item.operator_name || item.operation_id, item.target_user_name]
+  }),
+  user_balance_change: (item) => ({
+    text: t("TXT_CODE_OPLOG_USER_BALANCE_CHANGE"),
+    data: [item.operator_name || item.operation_id, item.target_user_name, item.change]
+  }),
+  user_impersonate: (item) => ({
+    text: t("TXT_CODE_OPLOG_USER_IMPERSONATE"),
+    data: [item.operator_name || item.operation_id, item.target_user_name]
+  }),
+  order_retry_provision: (item) => ({
+    text: t("TXT_CODE_OPLOG_ORDER_RETRY_PROVISION"),
+    data: [item.operator_name || item.operation_id, item.order_id]
+  }),
+  order_refund: (item) => ({
+    text: t("TXT_CODE_OPLOG_ORDER_REFUND"),
+    data: [item.operator_name || item.operation_id, item.order_id]
+  }),
+  order_mark_paid: (item) => ({
+    text: t("TXT_CODE_OPLOG_ORDER_MARK_PAID"),
+    data: [item.operator_name || item.operation_id, item.order_id]
+  }),
+  subscription_force_cancel: (item) => ({
+    text: t("TXT_CODE_OPLOG_SUBSCRIPTION_FORCE_CANCEL"),
+    data: [item.operator_name || item.operation_id, item.subscription_id]
+  }),
+  subscription_renew_now: (item) => ({
+    text: t("TXT_CODE_OPLOG_SUBSCRIPTION_RENEW_NOW"),
+    data: [item.operator_name || item.operation_id, item.subscription_id]
+  }),
+  subscription_auto_renew_change: (item) => ({
+    text: t("TXT_CODE_OPLOG_SUBSCRIPTION_AUTO_RENEW_CHANGE"),
+    data: [item.operator_name || item.operation_id, item.subscription_id, item.enabled]
+  }),
+  instance_extend: (item) => ({
+    text: t("TXT_CODE_OPLOG_INSTANCE_EXTEND"),
+    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+  }),
+  instance_suspend: (item) => ({
+    text: t("TXT_CODE_OPLOG_INSTANCE_SUSPEND"),
+    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+  }),
+  instance_resume: (item) => ({
+    text: t("TXT_CODE_OPLOG_INSTANCE_RESUME"),
+    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+  }),
+  instance_bandwidth_change: (item) => ({
+    text: t("TXT_CODE_OPLOG_INSTANCE_BANDWIDTH_CHANGE"),
+    data: [item.operator_name || item.operation_id, item.instance_name || item.instance_id]
+  }),
+  pay_config_change: (item) => ({
+    text: t("TXT_CODE_OPLOG_PAY_CONFIG_CHANGE"),
+    data: [item.operator_name || item.operation_id]
+  }),
+  email_config_change: (item) => ({
+    text: t("TXT_CODE_OPLOG_EMAIL_CONFIG_CHANGE"),
+    data: [item.operator_name || item.operation_id]
+  }),
+  business_setting_change: (item) => ({
+    text: t("TXT_CODE_OPLOG_BUSINESS_SETTING_CHANGE"),
+    data: [item.operator_name || item.operation_id]
   })
 };
 

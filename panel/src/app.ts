@@ -20,6 +20,13 @@ import { middleware as protocolMiddleware } from "./app/middleware/protocol";
 import { logger } from "./app/service/log";
 import SystemRemoteService from "./app/service/remote_service";
 import SystemUser from "./app/service/user_service";
+import HeartbeatSystem from "./app/service/heartbeat_service";
+import OrderSystem from "./app/service/order_service";
+import PlanSystem from "./app/service/plan_service";
+import ProvisionService from "./app/service/provision_service";
+import StatsSystem from "./app/service/stats_service";
+import SubscriptionSystem from "./app/service/subscription_service";
+import TemplateSystem from "./app/service/template_service";
 import versionAdapter from "./app/service/version_adapter";
 import { initSystemConfig, systemConfig } from "./app/setting";
 import { checkBusinessMode, getVersion, initVersionManager } from "./app/version";
@@ -124,6 +131,24 @@ _  /  / / / /___  ____/ /_  /  / / / /_/ /_  / / / /_/ /_  /_/ //  __/  /
   // Initialize services
   await SystemUser.initialize();
   await SystemRemoteService.initialize();
+  await PlanSystem.initialize();
+  await TemplateSystem.initialize();
+  await OrderSystem.initialize();
+  await SubscriptionSystem.initialize();
+
+  // Reprocess orders that were paid but never provisioned (crash recovery).
+  // Fire-and-forget: it must not block panel startup.
+  ProvisionService.recoverPendingOrders().catch((err) => {
+    logger.error($t("TXT_CODE_app.provisionRecoverError"), err);
+  });
+
+  // Subscription billing scheduler (renewal / expiry checks). Runs once per
+  // minute and performs a catch-up tick immediately on startup.
+  SubscriptionSystem.startScheduler();
+
+  // Node heartbeat monitor + daily business statistics aggregation.
+  HeartbeatSystem.startScheduler();
+  StatsSystem.startScheduler();
 
   const app = new Koa({
     proxy: systemConfig?.reverseProxyMode || false,

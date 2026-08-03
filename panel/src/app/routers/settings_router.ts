@@ -62,6 +62,36 @@ router.put("/setting", permission({ level: ROLE.ADMIN }), async (ctx) => {
     if (config.panelId != null) systemConfig.panelId = String(config.panelId);
     if (config.enableApiKey != null) systemConfig.enableApiKey = Boolean(config.enableApiKey);
 
+    if (config.registerEnabled != null) systemConfig.registerEnabled = Boolean(config.registerEnabled);
+
+    if (config.smtpEnabled != null) systemConfig.smtpEnabled = Boolean(config.smtpEnabled);
+    if (config.smtpHost != null) systemConfig.smtpHost = String(config.smtpHost);
+    if (config.smtpPort != null) systemConfig.smtpPort = Number(config.smtpPort);
+    if (config.smtpSecure != null) systemConfig.smtpSecure = Boolean(config.smtpSecure);
+    if (config.smtpUser != null) systemConfig.smtpUser = String(config.smtpUser);
+    if (config.smtpPass != null) systemConfig.smtpPass = String(config.smtpPass);
+    if (config.smtpFrom != null) systemConfig.smtpFrom = String(config.smtpFrom);
+    if (config.smtpFromName != null) systemConfig.smtpFromName = String(config.smtpFromName);
+
+    if (config.payEnabled != null) systemConfig.payEnabled = Boolean(config.payEnabled);
+    if (config.currency != null) systemConfig.currency = String(config.currency);
+    if (config.orderExpireMinutes != null)
+      systemConfig.orderExpireMinutes = Number(config.orderExpireMinutes);
+    if (config.yipayApiUrl != null) {
+      const url = String(config.yipayApiUrl).trim();
+      if (url && !url.startsWith("https://") && !url.startsWith("http://"))
+        throw new Error("Yipay API URL must use http(s) protocol");
+      systemConfig.yipayApiUrl = url;
+    }
+    if (config.yipayPid != null) systemConfig.yipayPid = String(config.yipayPid).trim();
+    if (config.yipayKey != null) systemConfig.yipayKey = String(config.yipayKey).trim();
+    if (config.yipaySignType != null) {
+      const signType = String(config.yipaySignType).toUpperCase();
+      if (signType !== "MD5" && signType !== "RSA")
+        throw new Error("yipaySignType must be 'MD5' or 'RSA'");
+      systemConfig.yipaySignType = signType;
+    }
+
     if (config.presetPackAddr != null) {
       // clear cache
       fs.remove(MARKET_CACHE_FILE_PATH).catch((err) => {

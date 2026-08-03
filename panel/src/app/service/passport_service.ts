@@ -2,7 +2,7 @@ import Koa from "koa";
 import { GlobalVariable } from "mcsmanager-common";
 import { authenticator } from "otplib";
 import QRCode from "qrcode";
-import { ROLE, User } from "../entity/user";
+import { ROLE, User, UserStatus } from "../entity/user";
 import { $t } from "../i18n";
 import { systemConfig } from "../setting";
 import { checkSafeName } from "../utils/safe";
@@ -29,6 +29,21 @@ export function login(
   try {
     const totpDriftToleranceSteps = systemConfig?.totpDriftToleranceSteps || 0;
     userSystem.checkUser({ userName, passWord }, twoFACode, totpDriftToleranceSteps);
+
+    // Email verification & account status check.
+    // Legacy accounts created before email verification existed carry no
+    // `emailVerified` field, so they are treated as verified to avoid locking
+    // existing administrators out. Newly created accounts must be verified.
+    const user = userSystem.getUserByUserName(userName);
+    if (user) {
+      if (user.emailVerified === false || user.status === UserStatus.PENDING_VERIFY)
+        throw new Error($t("TXT_CODE_AUTH_EMAIL_NOT_VERIFIED"));
+      if (user.status === UserStatus.SUSPENDED)
+        throw new Error($t("TXT_CODE_AUTH_USER_SUSPENDED"));
+      if (user.status === UserStatus.EXPIRED)
+        throw new Error($t("TXT_CODE_AUTH_USER_EXPIRED"));
+    }
+
     // The number of errors to reset this IP after successful login
     const ipMap = GlobalVariable.get(LOGIN_FAILED_KEY);
     if (ipMap) delete ipMap[ip || ""];
