@@ -50,6 +50,13 @@ cd "../web"
 call npm install --production
 cd "../../"
 
+rem mcsmanager-common is bundled into app.js by webpack, but npm still creates a
+rem node_modules symlink pointing at the non-existent ..\common directory.
+rem Remove it so release packaging (Compress-Archive) does not fail on the
+rem dangling symlink.
+if exist "production-code\daemon\node_modules\mcsmanager-common" rmdir "production-code\daemon\node_modules\mcsmanager-common"
+if exist "production-code\web\node_modules\mcsmanager-common" rmdir "production-code\web\node_modules\mcsmanager-common"
+
 echo "------------"
 echo "Compilation completed!"
 echo "Output Directory: ./production-code/"

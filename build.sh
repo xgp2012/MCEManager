@@ -51,6 +51,13 @@ npm install --production --no-fund --no-audit
 cd "${BASE_PATH}/production-code/web"
 npm install --production --no-fund --no-audit
 
+# mcsmanager-common is bundled into app.js by webpack, but npm still creates a
+# node_modules symlink pointing at the non-existent ../common directory.
+# Remove it so release packaging (tar / Compress-Archive) does not fail on the
+# dangling symlink.
+rm -rf "${BASE_PATH}/production-code/daemon/node_modules/mcsmanager-common"
+rm -rf "${BASE_PATH}/production-code/web/node_modules/mcsmanager-common"
+
 echo "------------"
 echo "Compilation completed!"
 echo "Output Directory: ./production-code/"
