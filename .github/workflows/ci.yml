@@ -11,12 +11,8 @@ permissions:
 
 jobs:
   lint-and-typecheck:
-    name: Lint & TypeCheck (${{ matrix.project }})
+    name: Lint & TypeCheck
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        project: [frontend, panel, daemon]
     steps:
       - uses: actions/checkout@v4
 
@@ -25,25 +21,33 @@ jobs:
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: ${{ matrix.project }}/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            common/package-lock.json
+            daemon/package-lock.json
+            panel/package-lock.json
+            frontend/package-lock.json
 
-      - name: Install dependencies
-        working-directory: ${{ matrix.project }}
-        run: npm ci
+      - name: Install all dependencies
+        run: |
+          chmod +x ./install-dependents.sh
+          ./install-dependents.sh
 
       - name: Run ESLint (frontend)
-        if: matrix.project == 'frontend'
-        working-directory: ${{ matrix.project }}
+        working-directory: frontend
         run: npm run lint
 
-      - name: Run TypeCheck
-        working-directory: ${{ matrix.project }}
-        run: |
-          if [ -f package.json ] && grep -q '"type-check"' package.json; then
-            npm run type-check
-          elif [ "${{ matrix.project }}" = "panel" ] || [ "${{ matrix.project }}" = "daemon" ]; then
-            npx tsc --noEmit
-          fi
+      - name: Run TypeCheck (frontend)
+        working-directory: frontend
+        run: npm run type-check
+
+      - name: Run TypeCheck (panel)
+        working-directory: panel
+        run: npx tsc --noEmit
+
+      - name: Run TypeCheck (daemon)
+        working-directory: daemon
+        run: npx tsc --noEmit
 
   build-verification:
     name: Build Verification
