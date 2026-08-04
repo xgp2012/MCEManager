@@ -1,7 +1,6 @@
 import { useDefineApi } from "@/stores/useDefineApi";
 import type {
   AdminSubscription,
-  Order,
   PageResult,
   RenewResult
 } from "@/types/business";

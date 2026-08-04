@@ -9,6 +9,9 @@
 [![--](https://img.shields.io/badge/Support%20Platform-Windows/Linux/Mac-green.svg)](https://github.com/xgp2012/MCEManager)
 [![Status](https://img.shields.io/badge/Node-v20.x-blue.svg)](https://nodejs.org/en/download/)
 [![Status](https://img.shields.io/badge/License-Apache%202.0-red.svg)](https://github.com/xgp2012/MCEManager)
+[![CI](https://github.com/xgp2012/MCEManager/actions/workflows/ci.yml/badge.svg)](https://github.com/xgp2012/MCEManager/actions/workflows/ci.yml)
+[![Release](https://github.com/xgp2012/MCEManager/actions/workflows/release.yml/badge.svg)](https://github.com/xgp2012/MCEManager/actions/workflows/release.yml)
+[![CodeQL](https://github.com/xgp2012/MCEManager/actions/workflows/codeql.yml/badge.svg)](https://github.com/xgp2012/MCEManager/actions/workflows/codeql.yml)
 
 <br />
 </div>
@@ -151,6 +154,37 @@ powershell -ExecutionPolicy Bypass -File scripts/release-build.ps1
 ```
 
 The tarball is what `install.sh` downloads from GitHub Releases (`mce_manager_linux_release.tar.gz`), so publishing a GitHub release makes the one-click installer work out of the box.
+
+<br />
+
+### Continuous Integration & Automated Releases
+
+Three GitHub Actions workflows keep the project green and produce the release packages:
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| **CI** (`ci.yml`) | push / PR to `master` / `develop` | ESLint (frontend), TypeScript type-check (all modules), full build verification |
+| **Release** (`release.yml`) | GitHub Release published / manual dispatch | Builds all modules and produces the 6 release packages below |
+| **CodeQL** (`codeql.yml`) | push / PR / weekly schedule | Security scanning (`security-and-quality`) |
+
+**To publish a release** (auto-builds and attaches the packages):
+
+```bash
+git tag v<version>          # e.g. git tag v10.18.0
+git push origin v<version>
+```
+
+Then create a **GitHub Release** from that tag. Publishing the Release triggers the `Release Build` workflow, which attaches these packages:
+
+```
+mce_manager_linux_release.tar.gz            mce_manager_windows_release.zip
+mce_manager_linux_web_only_release.tar.gz   mce_manager_windows_web_only_release.zip
+mce_manager_linux_daemon_only_release.tar.gz mce_manager_windows_daemon_only_release.zip
+```
+
+**Manual trigger** (no Release needed): open **Actions → Release Build → Run workflow**, optionally enter a version. The 6 packages are uploaded as build artifacts (kept for 30 days).
+
+> The daemon requires a **JDK 8+** installed separately — the Java runtime is not bundled in the packages.
 
 <br />
 

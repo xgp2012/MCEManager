@@ -182,6 +182,25 @@ production files, re-run `npm install --production`, restart.
 
 ---
 
+## 5.5 Releasing (for maintainers)
+
+Installation is **archive-only** — there are no Docker images. The release
+packages are produced automatically by the GitHub Actions workflow
+`.github/workflows/release.yml`:
+
+1. `git tag v<version> && git push origin v<version>`
+2. Create a **GitHub Release** from that tag. Publishing it triggers the build,
+   which attaches the 6 packages (Linux/Windows × full/web-only/daemon-only).
+3. Optionally run the workflow manually from **Actions → Release Build → Run
+   workflow** to build without publishing (artifacts kept 30 days).
+
+The `install.sh` one-click installer downloads
+`mce_manager_linux_release.tar.gz` from the latest Release. Note that the
+daemon component requires a **JDK 8+** installed on the target machine — it is
+not bundled.
+
+---
+
 ## 6. Troubleshooting
 
 - **Emails not sent** — check SMTP test button; verify the recipient is

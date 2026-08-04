@@ -10,7 +10,7 @@ import {
   updatePlanStatus
 } from "@/services/apis/plan";
 import { reportErrorMsg } from "@/tools/validator";
-import type { BillingCycle, Plan, PlanType } from "@/types/business";
+import type { Plan } from "@/types/business";
 import {
   BillingCycle as BillingCycleEnum,
   PlanType as PlanTypeEnum

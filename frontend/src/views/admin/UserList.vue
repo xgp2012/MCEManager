@@ -12,7 +12,7 @@ import {
 } from "@/services/apis/adminUser";
 import { useAppStateStore } from "@/stores/useAppStateStore";
 import { reportErrorMsg } from "@/tools/validator";
-import type { AdminUser, AdminUserDetail, UserStatus } from "@/types/business";
+import type { AdminUser, AdminUserDetail } from "@/types/business";
 import { OrderStatus, SubscriptionStatus, UserStatus as UserStatusEnum } from "@/types/business";
 import { message, Modal } from "ant-design-vue";
 import { onMounted, ref } from "vue";

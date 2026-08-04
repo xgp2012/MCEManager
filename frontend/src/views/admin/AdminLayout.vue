@@ -12,8 +12,7 @@ import {
   LogoutOutlined,
   SettingOutlined,
   TeamOutlined,
-  UnorderedListOutlined,
-  UserOutlined
+  UnorderedListOutlined
 } from "@ant-design/icons-vue";
 import { computed, h } from "vue";
 import { useRoute } from "vue-router";

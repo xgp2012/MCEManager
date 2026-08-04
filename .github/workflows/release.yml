@@ -4,74 +4,169 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g. v10.18.0)'
+        required: false
+        type: string
 
 permissions:
   contents: write
 
+env:
+  NODE_VERSION: '20.x'
+
 jobs:
   build:
+    name: Build Release Artifacts
     runs-on: ubuntu-latest
-
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history for version derivation
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          elif [ -n "${{ github.event.inputs.version }}" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION=$(node -p "require('./panel/package.json').version")
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "TAG=v$VERSION" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
         run: |
-          chmod a+x ./install-dependents.sh
-          chmod a+x ./build.sh
+          chmod +x ./install-dependents.sh
           ./install-dependents.sh
+
+      - name: Build all projects
+        run: |
+          chmod +x ./build.sh
           ./build.sh
 
-      - name: Add binaries to production files
-        run: wget --input-file=lib-urls.txt --directory-prefix=production-code/daemon/lib/
-
-      - name: Stage linux and windows builds
+      - name: Download daemon helper binaries
         run: |
-          cp -r production-code dist_linux
-          mv production-code dist_windows
-          mv dist_linux mcemanager_linux
-          mv dist_windows mcemanager_windows
+          wget --input-file=lib-urls.txt --directory-prefix=production-code/daemon/lib/
+          chmod +x production-code/daemon/lib/*
 
-      - name: Copy startup scripts
+      - name: Stage Linux release (full)
+        id: stage-linux
         run: |
-          cp prod-scripts/linux/* mcemanager_linux/
-          cp prod-scripts/windows/* mcemanager_windows/
+          RELEASE_NAME="mcemanager"
+          TARBALL="mce_manager_linux_release.tar.gz"
+          rm -rf staging && mkdir -p staging/$RELEASE_NAME
+          cp -r production-code/daemon staging/$RELEASE_NAME/
+          cp -r production-code/web staging/$RELEASE_NAME/
+          cp prod-scripts/linux/* staging/$RELEASE_NAME/
+          cp LICENSE staging/$RELEASE_NAME/
+          tar -czf $TARBALL -C staging $RELEASE_NAME
+          echo "TARBALL=$TARBALL" >> $GITHUB_OUTPUT
 
-      - name: Copy license
+      - name: Stage Linux Web-only
+        id: stage-linux-web
         run: |
-          cp LICENSE mcemanager_linux/LICENSE
-          cp LICENSE mcemanager_windows/LICENSE
+          RELEASE_NAME="mcemanager"
+          TARBALL="mce_manager_linux_web_only_release.tar.gz"
+          rm -rf staging && mkdir -p staging/$RELEASE_NAME
+          cp -r production-code/web staging/$RELEASE_NAME/
+          cp prod-scripts/linux/start-web.sh staging/$RELEASE_NAME/
+          cp LICENSE staging/$RELEASE_NAME/
+          tar -czf $TARBALL -C staging $RELEASE_NAME
+          echo "TARBALL=$TARBALL" >> $GITHUB_OUTPUT
 
-      - name: Copy node runtime to windows build
+      - name: Stage Linux Daemon-only
+        id: stage-linux-daemon
         run: |
-          wget https://nodejs.org/download/release/latest-v20.x/win-x64/node.exe -O mcemanager_windows/daemon/node_app.exe
-          cp mcemanager_windows/daemon/node_app.exe mcemanager_windows/web/node_app.exe
+          RELEASE_NAME="mcemanager"
+          TARBALL="mce_manager_linux_daemon_only_release.tar.gz"
+          rm -rf staging && mkdir -p staging/$RELEASE_NAME
+          cp -r production-code/daemon staging/$RELEASE_NAME/
+          cp prod-scripts/linux/start-daemon.sh staging/$RELEASE_NAME/
+          cp LICENSE staging/$RELEASE_NAME/
+          tar -czf $TARBALL -C staging $RELEASE_NAME
+          echo "TARBALL=$TARBALL" >> $GITHUB_OUTPUT
 
-      - name: Create archive
+      - name: Stage Windows release (full)
+        id: stage-windows
         run: |
-          mv mcemanager_linux/ mcemanager/
-          tar czf mce_manager_linux_release.tar.gz mcemanager/
-          tar --exclude='mcemanager/daemon' --exclude='mcemanager/start-daemon.sh' -czf mce_manager_linux_web_only_release.tar.gz mcemanager/
-          tar --exclude='mcemanager/web' --exclude='mcemanager/start-web.sh' -czf mce_manager_linux_daemon_only_release.tar.gz mcemanager/
-          rm -rf mcemanager/
-          mv mcemanager_windows/ mcemanager/
-          zip -r mce_manager_windows_release.zip mcemanager/
-          zip -r mce_manager_windows_web_only_release.zip mcemanager/ -x "mcemanager/daemon/*"
-          zip -r mce_manager_windows_daemon_only_release.zip mcemanager/ -x "mcemanager/web/*"
+          RELEASE_NAME="mcemanager"
+          ZIP="mce_manager_windows_release.zip"
+          rm -rf staging && mkdir -p staging/$RELEASE_NAME
+          cp -r production-code/daemon staging/$RELEASE_NAME/
+          cp -r production-code/web staging/$RELEASE_NAME/
+          cp prod-scripts/windows/start.bat staging/$RELEASE_NAME/
+          cp LICENSE staging/$RELEASE_NAME/
+          wget -q "https://nodejs.org/download/release/latest-v20.x/win-x64/node.exe" \
+            -O staging/$RELEASE_NAME/daemon/node_app.exe
+          cp staging/$RELEASE_NAME/daemon/node_app.exe staging/$RELEASE_NAME/web/node_app.exe
+          pwsh -Command "Compress-Archive -Path 'staging/$RELEASE_NAME' -DestinationPath '$ZIP' -CompressionLevel Optimal"
+          echo "ZIP=$ZIP" >> $GITHUB_OUTPUT
 
-      - name: Upload assets to release
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Stage Windows Web-only
+        id: stage-windows-web
+        run: |
+          RELEASE_NAME="mcemanager"
+          ZIP="mce_manager_windows_web_only_release.zip"
+          rm -rf staging && mkdir -p staging/$RELEASE_NAME
+          cp -r production-code/web staging/$RELEASE_NAME/
+          cp prod-scripts/windows/start.bat staging/$RELEASE_NAME/
+          cp LICENSE staging/$RELEASE_NAME/
+          wget -q "https://nodejs.org/download/release/latest-v20.x/win-x64/node.exe" \
+            -O staging/$RELEASE_NAME/web/node_app.exe
+          pwsh -Command "Compress-Archive -Path 'staging/$RELEASE_NAME' -DestinationPath '$ZIP' -CompressionLevel Optimal"
+          echo "ZIP=$ZIP" >> $GITHUB_OUTPUT
+
+      - name: Stage Windows Daemon-only
+        id: stage-windows-daemon
+        run: |
+          RELEASE_NAME="mcemanager"
+          ZIP="mce_manager_windows_daemon_only_release.zip"
+          rm -rf staging && mkdir -p staging/$RELEASE_NAME
+          cp -r production-code/daemon staging/$RELEASE_NAME/
+          cp prod-scripts/windows/start.bat staging/$RELEASE_NAME/
+          cp LICENSE staging/$RELEASE_NAME/
+          wget -q "https://nodejs.org/download/release/latest-v20.x/win-x64/node.exe" \
+            -O staging/$RELEASE_NAME/daemon/node_app.exe
+          pwsh -Command "Compress-Archive -Path 'staging/$RELEASE_NAME' -DestinationPath '$ZIP' -CompressionLevel Optimal"
+          echo "ZIP=$ZIP" >> $GITHUB_OUTPUT
+
+      - name: Upload Release Assets
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            mce_manager_windows_release.zip
-            mce_manager_windows_web_only_release.zip
-            mce_manager_windows_daemon_only_release.zip
             mce_manager_linux_release.tar.gz
             mce_manager_linux_web_only_release.tar.gz
             mce_manager_linux_daemon_only_release.tar.gz
+            mce_manager_windows_release.zip
+            mce_manager_windows_web_only_release.zip
+            mce_manager_windows_daemon_only_release.zip
+          tag_name: ${{ steps.version.outputs.TAG }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Artifacts (workflow_dispatch)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts-${{ steps.version.outputs.VERSION }}
+          path: |
+            mce_manager_linux_release.tar.gz
+            mce_manager_linux_web_only_release.tar.gz
+            mce_manager_linux_daemon_only_release.tar.gz
+            mce_manager_windows_release.zip
+            mce_manager_windows_web_only_release.zip
+            mce_manager_windows_daemon_only_release.zip
+          retention-days: 30
